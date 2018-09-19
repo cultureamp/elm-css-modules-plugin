@@ -1,10 +1,11 @@
 {
-  "name": "babel-plugin-foundry",
-  "version": "1.0.0",
-  "repository": "git@github.com:zioroboco/babel-plugin-foundry.git",
+  "name": "elm-css-modules-plugin",
+  "description": "Babel plugin for use within cultureamp/elm-css-modules-loader",
+  "version": "0.1.0",
+  "repository": "git@github.com:cultureamp/elm-css-modules-plugin.git",
   "author": "Louis Quinnell <zioroboco@gmail.com>",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "main": "lib/index.js",
   "files": [
     "lib"

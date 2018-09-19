@@ -1,1 +1,1 @@
-# Babel Plugin Foundry
+# Elm CSS Modules Plugin
