@@ -1,1 +1,0 @@
-var palindromes = ["kayak", "taco cat"];
