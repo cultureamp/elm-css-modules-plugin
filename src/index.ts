@@ -17,8 +17,13 @@ type PluginOptions = {
   taggerName: string
 }
 
+/**
+ * Corresponds to the default compiled output from the Elm package at
+ * `cultureamp/elm-css-modules-loader`, allowing the plugin to be used directly
+ * from babel-loader.
+ */
 const defaultPluginOptions: PluginOptions = {
-  taggerName: "_cultureamp$elm_css_modules_loader$CssModules$CssModule"
+  taggerName: "cultureamp$elm_css_modules_loader$CssModules$css"
 }
 
 /**
