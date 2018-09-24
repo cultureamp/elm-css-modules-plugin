@@ -113,12 +113,6 @@
   dependencies:
     "@babel/types" "^7.0.0-beta.54"
 
-"@types/babel__traverse@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@types/babel__traverse/-/babel__traverse-7.0.0.tgz#0e6a0a8cb938ed26d0d90e83456335ddc6efd2c4"
-  dependencies:
-    "@babel/types" "^7.0.0-beta.54"
-
 "@types/jest@^23.3.2":
   version "23.3.2"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.2.tgz#07b90f6adf75d42c34230c026a2529e56c249dbb"
