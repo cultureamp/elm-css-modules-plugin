@@ -18,8 +18,8 @@ describe("elm-css-modules-plugin", () => {
   )
 
   it("transforms simple input to the expected output", () => {
-    const input = fixture("input.js")
-    const expectedOutput = fixture("output.js")
+    const input = fixture("simple-input.js")
+    const expectedOutput = fixture("simple-output.js")
     expect(transform(input)).toBe(expectedOutput)
   })
 
