@@ -37,24 +37,37 @@ type CssModuleExpressionArguments = [
   ObjectExpression
 ]
 
-const makePlugin = (options: PluginOptions): PluginObj => ({
-  name: "elm-css-modules-plugin",
-  visitor: {
-    CallExpression: ({ node }) => {
-      if (!isCssModuleExpression(node, options.taggerName)) return
+const makePlugin = (options: PluginOptions): PluginObj => {
+  /** An append-only list of error descriptions. */
+  const errors: string[] = []
 
-      const [
-        taggerIdNode,
-        filePathNode,
-        classMapNode
-      ] = node.arguments as CssModuleExpressionArguments
+  return {
+    name: "elm-css-modules-plugin",
 
-      classMapNode.properties = classMapNode.properties.map(
-        transformClassMapProperty(filePathNode.value)
-      )
+    post: () => {
+      if (errors.length > 0) {
+        // report errors and throw
+        throw new Error(`elm-css-modules-plugin:\n\t` + errors.join("\n\t"))
+      }
+    },
+
+    visitor: {
+      CallExpression: ({ node }) => {
+        if (!isCssModuleExpression(node, options.taggerName)) return
+
+        const [
+          taggerIdNode,
+          filePathNode,
+          classMapNode
+        ] = node.arguments as CssModuleExpressionArguments
+
+        classMapNode.properties = classMapNode.properties.map(
+          makeClassMapPropertyTransform(filePathNode.value, errors)
+        )
+      }
     }
   }
-})
+}
 
 /**
  * The shape of a pre-transformed elm-css-modules CSS module object property,
@@ -67,21 +80,38 @@ interface ClassMapProperty extends ObjectProperty {
 }
 
 /**
+ * Returns an error description for a classname node with an empty string value.
+ */
+const emptyClassnameError = (
+  filePath: string,
+  key: Identifier,
+  classname: StringLiteral
+): string => {
+  const { line, column } = classname.loc.start
+  const { name } = key
+  return `classname for module '${filePath}' with key '${name}' contained an empty string (${line},${column})`
+}
+
+/**
  * Takes the path to a CSS file and returns a function which transforms
  * properties on the associated CSS modules map (as a POJO) output by the
  * Elm compiler into a member-accessed `require` expression for that CSS file.
  *
  * e.g. `xx: 'someClass'` -> `xx: require('./Main.css').someClass`
  */
-const transformClassMapProperty = (filePath: string) => {
-  return ({ key, value: classname }: ClassMapProperty) =>
-    objectProperty(
+const makeClassMapPropertyTransform = (filePath: string, errors: string[]) => {
+  return ({ key, value: classname }: ClassMapProperty) => {
+    if (classname.value === "") {
+      errors.push(emptyClassnameError(filePath, key, classname))
+    }
+    return objectProperty(
       key,
       memberExpression(
         callExpression(identifier("require"), [stringLiteral(filePath)]),
         identifier(classname.value)
       )
     )
+  }
 }
 
 /**

@@ -27,4 +27,9 @@ describe("elm-css-modules-plugin", () => {
     const input = fixture("example.js")
     expect(transform(input)).toMatchSnapshot()
   })
+
+  it("throws if a classname node contains an empty string", () => {
+    const input = fixture("old-api.js")
+    expect(() => transform(input)).toThrowError()
+  })
 })
