@@ -108,7 +108,8 @@ const makeClassMapPropertyTransform = (filePath: string, errors: string[]) => {
       key,
       memberExpression(
         callExpression(identifier("require"), [stringLiteral(filePath)]),
-        identifier(classname.value)
+        stringLiteral(classname.value),
+        true // computed? (i.e. `object["property"]`)
       )
     )
   }

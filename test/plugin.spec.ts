@@ -23,6 +23,11 @@ describe("elm-css-modules-plugin", () => {
     expect(transform(input)).toBe(expectedOutput)
   })
 
+  it("transforms kebab-cased classnames according to snapshot", () => {
+    const input = fixture("kebab.js")
+    expect(transform(input)).toMatchSnapshot()
+  })
+
   it("transforms example webpack output according to snapshot", () => {
     const input = fixture("example.js")
     expect(transform(input)).toMatchSnapshot()

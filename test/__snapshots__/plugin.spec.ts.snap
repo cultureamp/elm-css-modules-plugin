@@ -4526,7 +4526,7 @@ function (module, exports) {
       };
     });
     var author$project$Nested$Styles$styles = A2(author$project$CssModules$css, './Nested/Nested.css', {
-      ax: require(\\"./Nested/Nested.css\\").nested
+      ax: require(\\"./Nested/Nested.css\\")[\\"nested\\"]
     });
 
     var elm$html$Html$div = _VirtualDom_node('div');
@@ -4537,8 +4537,8 @@ function (module, exports) {
       return $.ax;
     })]), _List_fromArray([elm$html$Html$text('This is a nested div')]));
     var author$project$Styles$styles = A2(author$project$CssModules$css, './Main.css', {
-      aC: require(\\"./Main.css\\").something,
-      aD: require(\\"./Main.css\\").somethingElse
+      aC: require(\\"./Main.css\\")[\\"something\\"],
+      aD: require(\\"./Main.css\\")[\\"somethingElse\\"]
     });
 
     var author$project$Main$view = function (_n0) {
@@ -4756,4 +4756,11 @@ function (module, exports) {
   /***/
 
 }]);"
+`;
+
+exports[`elm-css-modules-plugin transforms kebab-cased classnames according to snapshot 1`] = `
+"var author$project$Styles$styles = A2(author$project$CssModules$css, \\"./Main.css\\", {
+  aC: require(\\"./Main.css\\")[\\"something\\"],
+  aD: require(\\"./Main.css\\")[\\"something-else\\"]
+});"
 `;
