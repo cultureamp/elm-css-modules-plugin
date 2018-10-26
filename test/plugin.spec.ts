@@ -2,20 +2,19 @@ import { transformSync, PluginObj } from "@babel/core"
 import * as path from "path"
 import * as fs from "fs"
 
-import * as plugin from "../src"
+import plugin, { PluginOptions } from "../src"
 
 const EXAMPLE_TAGGER_NAME = "author$project$CssModules$css"
 
 const fixture = (filename: string) =>
   fs.readFileSync(path.join(__dirname, "fixtures", filename)).toString()
 
-const transformWith = (plugin: PluginObj) => (input: string) =>
-  transformSync(input, { plugins: [plugin] }).code
+const transformWith = (plugin: ({}) => PluginObj, options?: PluginOptions) => (
+  input: string
+) => transformSync(input, { plugins: [[plugin, options]] }).code
 
 describe("elm-css-modules-plugin", () => {
-  const transform = transformWith(
-    plugin.withOptions({ taggerName: EXAMPLE_TAGGER_NAME })
-  )
+  const transform = transformWith(plugin, { taggerName: EXAMPLE_TAGGER_NAME })
 
   it("transforms simple input to the expected output", () => {
     const input = fixture("simple-input.js")

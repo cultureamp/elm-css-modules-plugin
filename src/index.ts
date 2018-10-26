@@ -37,12 +37,13 @@ type CssModuleExpressionArguments = [
   ObjectExpression
 ]
 
-const makePlugin = (options: PluginOptions): PluginObj => {
+const plugin = ({}): PluginObj => {
   /** An append-only list of error descriptions. */
   const errors: string[] = []
+  const name = "elm-css-modules-plugin"
 
   return {
-    name: "elm-css-modules-plugin",
+    name,
 
     post: () => {
       if (errors.length > 0) {
@@ -52,14 +53,12 @@ const makePlugin = (options: PluginOptions): PluginObj => {
     },
 
     visitor: {
-      CallExpression: ({ node }) => {
-        if (!isCssModuleExpression(node, options.taggerName)) return
+      CallExpression: (path, { opts }) => {
+        const options = { ...defaultPluginOptions, ...opts }
+        if (!isCssModuleExpression(path.node, options.taggerName)) return
 
-        const [
-          taggerIdNode,
-          filePathNode,
-          classMapNode
-        ] = node.arguments as CssModuleExpressionArguments
+        const [taggerIdNode, filePathNode, classMapNode] = path.node
+          .arguments as CssModuleExpressionArguments
 
         classMapNode.properties = classMapNode.properties.map(
           makeClassMapPropertyTransform(filePathNode.value, errors)
@@ -128,6 +127,6 @@ const isCssModuleExpression = (
   isIdentifier(expression.arguments[0]) &&
   expression.arguments[0]["name"] === taggerIdName
 
-export default makePlugin(defaultPluginOptions)
+export default plugin
 
-export { makePlugin as withOptions, defaultPluginOptions, PluginOptions }
+export { defaultPluginOptions, PluginOptions }
