@@ -1,5 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`elm-css-modules-plugin locates and transforms modules by tagger name according to snapshot 1`] = `
+"var author$project$Styles$styles = A2(someone$elsewhere$BizarroCssModules$bcss, \\"./Main.css\\", {
+  aC: require(\\"./Main.css\\")[\\"something\\"],
+  aD: require(\\"./Main.css\\")[\\"somethingElse\\"]
+});"
+`;
+
 exports[`elm-css-modules-plugin transforms example webpack output according to snapshot 1`] = `
 "/******/
 (function (modules) {

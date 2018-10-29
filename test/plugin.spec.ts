@@ -37,4 +37,13 @@ describe("elm-css-modules-plugin", () => {
     const input = fixture("old-api.js")
     expect(() => transform(input)).toThrowError()
   })
+
+  it("locates and transforms modules by tagger name according to snapshot", () => {
+    const alternateTaggerName = "someone$elsewhere$BizarroCssModules$bcss"
+    const alternateTransform = transformWith(
+      plugin.withOptions({ taggerName: alternateTaggerName })
+    )
+    const input = fixture("alternate-tagger.js")
+    expect(alternateTransform(input)).toMatchSnapshot()
+  })
 })
