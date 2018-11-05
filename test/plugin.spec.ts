@@ -27,6 +27,11 @@ describe("elm-css-modules-plugin", () => {
     expect(transform(input)).toMatchSnapshot()
   })
 
+  it("transforms Elm 0.18 modules according to snapshot", () => {
+    const input = fixture("elm-0.18.js")
+    expect(transform(input)).toMatchSnapshot()
+  })
+
   it("transforms example webpack output according to snapshot", () => {
     const input = fixture("example.js")
     expect(transform(input)).toMatchSnapshot()
