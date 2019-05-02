@@ -125,7 +125,10 @@ const isCssModuleExpression = (
   isIdentifier(expression.callee) &&
   expression.callee.name === "A2" &&
   isIdentifier(expression.arguments[0]) &&
-  expression.arguments[0]["name"] === taggerIdName
+  // Elm 0.18 compiler prefixes modules with an underscore
+  ["", "_"].some(
+    prefix => expression.arguments[0]["name"] === prefix + taggerIdName
+  )
 
 export default plugin
 
