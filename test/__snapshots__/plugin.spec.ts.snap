@@ -7,6 +7,13 @@ exports[`elm-css-modules-plugin locates and transforms modules by tagger name ac
 });"
 `;
 
+exports[`elm-css-modules-plugin transforms Elm 0.18 modules according to snapshot 1`] = `
+"var _author$project$Styles$_p0 = A2(_author$project$CssModules$css, './Main.css', {
+  something: require(\\"./Main.css\\")[\\"something\\"],
+  somethingElse: require(\\"./Main.css\\")[\\"somethingElse\\"]
+});"
+`;
+
 exports[`elm-css-modules-plugin transforms example webpack output according to snapshot 1`] = `
 "/******/
 (function (modules) {
