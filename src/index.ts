@@ -10,11 +10,13 @@ import {
   memberExpression,
   callExpression,
   stringLiteral,
-  identifier
+  identifier,
 } from "@babel/types"
 
 type PluginOptions = {
   taggerName: string
+  /** Expect the CSS Modules object to be found on the default export. Some webpack configurations require this. */
+  expectCssModulesToBeEsModule?: boolean
 }
 
 /**
@@ -23,7 +25,8 @@ type PluginOptions = {
  * from babel-loader.
  */
 const defaultPluginOptions: PluginOptions = {
-  taggerName: "cultureamp$elm_css_modules_loader$CssModules$css"
+  taggerName: "cultureamp$elm_css_modules_loader$CssModules$css",
+  expectCssModulesToBeEsModule: false,
 }
 
 /**
@@ -61,10 +64,14 @@ const plugin = ({}): PluginObj => {
           .arguments as CssModuleExpressionArguments
 
         classMapNode.properties = classMapNode.properties.map(
-          makeClassMapPropertyTransform(filePathNode.value, errors)
+          makeClassMapPropertyTransform(
+            filePathNode.value,
+            options.expectCssModulesToBeEsModule,
+            errors
+          )
         )
-      }
-    }
+      },
+    },
   }
 }
 
@@ -98,17 +105,29 @@ const emptyClassnameError = (
  *
  * e.g. `xx: "someClass"` -> `xx: require("./Main.css")["someClass"]`
  */
-const makeClassMapPropertyTransform = (filePath: string, errors: string[]) => {
+const makeClassMapPropertyTransform = (
+  filePath: string,
+  expectCssModulesToBeEsModule: boolean,
+  errors: string[]
+) => {
   return ({ key, value: classname }: ClassMapProperty) => {
     if (classname.value === "") {
       errors.push(emptyClassnameError(filePath, key, classname))
     }
+    const requireStatement = callExpression(identifier("require"), [
+      stringLiteral(filePath),
+    ])
+
+    const cssModuleObject = expectCssModulesToBeEsModule
+      ? memberExpression(requireStatement, identifier("default"))
+      : requireStatement
+
     return objectProperty(
       key,
       memberExpression(
-        callExpression(identifier("require"), [stringLiteral(filePath)]),
+        cssModuleObject,
         stringLiteral(classname.value),
-        true // computed? (i.e. `object["property"]`)
+        true // computed? (i.e. `object["property"]` as opposed to object.property)
       )
     )
   }
@@ -128,7 +147,7 @@ const isCssModuleExpression = (
   // Elm 0.18 compiler prefixes modules with an underscore
   // Elm 0.19.1 compiler prefixes modules with an $
   ["", "_", "$"].some(
-    prefix => expression.arguments[0]["name"] === prefix + taggerIdName
+    (prefix) => expression.arguments[0]["name"] === prefix + taggerIdName
   )
 
 export default plugin
