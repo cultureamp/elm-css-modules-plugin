@@ -9,12 +9,15 @@ const EXAMPLE_TAGGER_NAME = "author$project$CssModules$css"
 const fixture = (filename: string) =>
   fs.readFileSync(path.join(__dirname, "fixtures", filename)).toString()
 
-const transformWith = (plugin: ({}) => PluginObj, options?: PluginOptions) => (
-  input: string
-) => transformSync(input, { plugins: [[plugin, options]] }).code
+const transformWith =
+  (plugin: ({}) => PluginObj, options?: PluginOptions) => (input: string) =>
+    transformSync(input, { plugins: [[plugin, options]] }).code
 
 describe("elm-css-modules-plugin", () => {
-  const transform = transformWith(plugin, { taggerName: EXAMPLE_TAGGER_NAME })
+  const transform = transformWith(plugin, {
+    taggerName: EXAMPLE_TAGGER_NAME,
+    expectCssModulesToBeEsModule: false,
+  })
 
   it("transforms simple input to the expected output", () => {
     const input = fixture("simple-input.js")
@@ -50,9 +53,19 @@ describe("elm-css-modules-plugin", () => {
   it("locates and transforms modules by tagger name according to snapshot", () => {
     const alternateTaggerName = "someone$elsewhere$BizarroCssModules$bcss"
     const alternateTransform = transformWith(plugin, {
-      taggerName: alternateTaggerName
+      taggerName: alternateTaggerName,
     })
     const input = fixture("alternate-tagger.js")
     expect(alternateTransform(input)).toMatchSnapshot()
+  })
+
+  it("uses the default export if expectEsModule is false", () => {
+    const alternateTransform = transformWith(plugin, {
+      taggerName: EXAMPLE_TAGGER_NAME,
+      expectCssModulesToBeEsModule: true,
+    })
+    const input = fixture("simple-input.js")
+    const expectedOutput = fixture("simple-output-esm.js")
+    expect(alternateTransform(input)).toBe(expectedOutput)
   })
 })
