@@ -16,16 +16,14 @@
     "prepublish": "yarn build"
   },
   "devDependencies": {
-    "@types/babel__core": "^7.0.1",
     "@types/jest": "^23.3.2",
     "@types/node": "^10.9.4",
-    "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "jest": "^23.6.0",
     "ts-jest": "^23.1.4",
     "typescript": "^3.0.3"
   },
   "dependencies": {
-    "@babel/core": "^7.0.0"
+    "@babel/core": "^7.23.7"
   }
 }
